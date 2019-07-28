@@ -43,6 +43,18 @@ class PasswordGrantTests extends TestCase
         self::assertThat($response->status(), self::equalTo(400));
     }
 
+    public function test_it_access_token_route_with_wrong_arguments__unauthorized()
+    {
+        $response = $this->post('/oauth/token', [
+            'grant_type' => 'password',
+            'client_id' => 'client-id',
+            'client_secret' => 'client-secret',
+            'username' => 'taylor@laravel.com',
+            'password' => 'my-password',
+            'scope' => '',
+        ]);
+        self::assertThat($response->status(), self::equalTo(401));
+    }
 }
 
 ?>
