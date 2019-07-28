@@ -20,13 +20,13 @@ class ClientCredentialsGrantTests extends TestCase
      */
     private $client;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         DB::table('oauth_access_tokens')->delete();
         parent::tearDown();
@@ -64,6 +64,9 @@ class ClientCredentialsGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
+        $access_token = DB::table('oauth_access_tokens')->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
 }
 
