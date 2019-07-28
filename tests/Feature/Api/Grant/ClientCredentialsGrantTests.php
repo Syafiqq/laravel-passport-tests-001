@@ -10,6 +10,7 @@
 namespace Tests\Feature\Api;
 
 
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ClientCredentialsGrantTests extends TestCase
@@ -29,6 +30,23 @@ class ClientCredentialsGrantTests extends TestCase
             'scope' => 'your-scope',
         ]);
         self::assertThat($response->status(), self::equalTo(401));
+    }
+
+    public function test_it_access_token_route_with_right_arguments__ok()
+    {
+        $client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
+        self::assertThat($client, self::logicalNot(self::isNull()));
+        $body = [
+            'grant_type' => 'client_credentials',
+            'client_id' => $client->{'id'},
+            'client_secret' => $client->{'secret'},
+            'scope' => '*',
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(200));
     }
 }
 
