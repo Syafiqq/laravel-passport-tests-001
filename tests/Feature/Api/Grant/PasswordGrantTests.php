@@ -85,6 +85,27 @@ class PasswordGrantTests extends TestCase
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
+
+    public function test_it_access_token_route_with_wrong_scope__bad_request()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $body = [
+            'grant_type' => 'password',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'username' => $this->user->{'email'},
+            'password' => $this->user->{'password'},
+            'scope' => '<<==this is wrong scope==>>',
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(400));
+        $access_token = DB::table('oauth_access_tokens')->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::isNull());
+    }
 }
 
 ?>
