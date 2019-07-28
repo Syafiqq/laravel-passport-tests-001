@@ -10,6 +10,7 @@
 namespace Tests\Feature\Api\Grant;
 
 
+use App\User;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -19,11 +20,13 @@ class PasswordGrantTests extends TestCase
      * @var \Illuminate\Database\Eloquent\Model|object|null
      */
     private $client;
+    private $user;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpClient();
+        $this->setUpUser();
     }
 
     protected function tearDown(): void
@@ -35,6 +38,11 @@ class PasswordGrantTests extends TestCase
     private function setUpClient()
     {
         $this->client = DB::table('oauth_clients')->where('name', 'Password Grant Client')->first();
+    }
+
+    private function setUpUser()
+    {
+        $this->user = User::first();
     }
 
     public function test_it_access_token_route_with_no_arguments_provided__bad_request()
