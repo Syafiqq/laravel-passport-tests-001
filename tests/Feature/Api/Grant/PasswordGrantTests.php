@@ -147,6 +147,39 @@ class PasswordGrantTests extends TestCase
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
+
+    public function test_it_access_token_route_with_revoked_client__unauthorized()
+    {
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'revoked' => 1
+            ]);
+        $this->setUpClient();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->client->{'revoked'}, self::equalTo(1));
+        $body = [
+            'grant_type' => 'password',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'username' => $this->user->{'email'},
+            'password' => $this->user->{'password'},
+            'scope' => '*',
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(401));
+        $access_token = DB::table('oauth_access_tokens')->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::isNull());
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'revoked' => 0
+            ]);
+    }
 }
 
 ?>
