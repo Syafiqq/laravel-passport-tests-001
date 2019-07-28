@@ -43,6 +43,7 @@ class PasswordGrantTests extends TestCase
     private function setUpUser()
     {
         $this->user = User::first();
+        $this->user->{'password'} = 'password';
     }
 
     public function test_it_access_token_route_with_no_arguments_provided__bad_request()
