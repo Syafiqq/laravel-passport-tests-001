@@ -110,6 +110,25 @@ class ClientCredentialsGrantTests extends TestCase
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
 
+    public function test_it_access_token_route_with_empty_scope__ok()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $body = [
+            'grant_type' => 'client_credentials',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'scope' => '',
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(200));
+        $access_token = DB::table('oauth_access_tokens')->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
+    }
+
     public function test_it_access_token_route_with_revoked_client__unauthorized()
     {
         DB::table('oauth_clients')->update([
