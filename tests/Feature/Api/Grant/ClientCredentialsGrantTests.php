@@ -23,7 +23,7 @@ class ClientCredentialsGrantTests extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
+        $this->setUpClient();
     }
 
     protected function tearDown(): void
@@ -32,6 +32,10 @@ class ClientCredentialsGrantTests extends TestCase
         parent::tearDown();
     }
 
+    private function setUpClient()
+    {
+        $this->client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
+    }
 
     public function test_it_access_token_route_with_no_arguments_provided__bad_request()
     {
