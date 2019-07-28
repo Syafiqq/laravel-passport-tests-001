@@ -34,7 +34,7 @@ class PasswordGrantTests extends TestCase
 
     private function setUpClient()
     {
-        $this->client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
+        $this->client = DB::table('oauth_clients')->where('name', 'Password Grant Client')->first();
     }
 
     public function test_it_access_token_route_with_no_arguments_provided__bad_request()
