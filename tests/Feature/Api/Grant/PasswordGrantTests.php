@@ -10,10 +10,38 @@
 namespace Tests\Feature\Api\Grant;
 
 
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class PasswordGrantTests extends TestCase
 {
+    /**
+     * @var \Illuminate\Database\Eloquent\Model|object|null
+     */
+    private $client;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpClient();
+    }
+
+    protected function tearDown(): void
+    {
+        DB::table('oauth_access_tokens')->delete();
+        parent::tearDown();
+    }
+
+    private function setUpClient()
+    {
+        $this->client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
+    }
+
+    public function test_it_access_token_route_with_no_arguments_provided__bad_request()
+    {
+        $response = $this->post('/oauth/token');
+        self::assertThat($response->status(), self::equalTo(400));
+    }
 
 }
 
