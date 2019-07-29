@@ -12,9 +12,6 @@ namespace Tests\Feature\Api\Grant;
 
 use App\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
-use League\OAuth2\Server\AuthorizationServer;
-use Psr\Http\Message\ServerRequestInterface;
 use Tests\TestCase;
 
 class AuthorizeCodeGrantTests extends TestCase
@@ -66,6 +63,26 @@ class AuthorizeCodeGrantTests extends TestCase
     private function tearDownSession()
     {
         DB::table('sessions')->delete();
+    }
+
+    private function getCompleteAuthorization(): array
+    {
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $this->client->{'id'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'scope' => '*',
+            'state' => $this->token,
+        ]);
+        $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        $response = $this->actingAs($this->user)->post('/oauth/authorize', [
+            '_token' => csrf_token(),
+            'state' => $this->token,
+            'client_id' => $this->client->{'id'},
+        ]);
+        $location = $response->headers->get('Location');
+        parse_str(parse_url($location, PHP_URL_QUERY), $array);
+        return $array;
     }
 
     public function test_it_generate_csrf_token()
@@ -226,7 +243,7 @@ class AuthorizeCodeGrantTests extends TestCase
             'client_id' => $this->client->{'id'},
         ]);
         $location = $response->headers->get('Location');
-        parse_str( parse_url( $location, PHP_URL_QUERY), $array );
+        parse_str(parse_url($location, PHP_URL_QUERY), $array);
         var_dump($array);
         self::assertThat($response->status(), self::equalTo(302));
         self::assertThat($array, self::arrayHasKey('code'));
