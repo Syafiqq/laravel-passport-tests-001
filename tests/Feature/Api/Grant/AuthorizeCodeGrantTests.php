@@ -118,7 +118,7 @@ class AuthorizeCodeGrantTests extends TestCase
             'response_type' => 'code',
             'client_id' => $this->client->{'id'},
             'redirect_uri' => $this->client->{'redirect'},
-            'scope' => '',
+            'scope' => '*',
             'state' => $this->token,
         ]);
         $response = $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
