@@ -173,6 +173,38 @@ class AuthorizeCodeGrantTests extends TestCase
         var_dump($response);
         self::assertThat($response->status(), self::equalTo(200));
     }
+
+    public function test_it_access_authorize_route_with_revoked_client__unauthorized()
+    {
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'revoked' => 1
+            ]);
+        $this->setUpClient();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->client->{'revoked'}, self::equalTo(1));
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $this->client->{'id'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'scope' => '*',
+            'state' => $this->token,
+        ]);
+
+        $response = $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        var_dump($query);
+        var_dump($response);
+        self::assertThat($response->status(), self::equalTo(401));
+        $access_token = DB::table('oauth_access_tokens')->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::isNull());
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'revoked' => 0
+            ]);
+    }
 }
 
 ?>
