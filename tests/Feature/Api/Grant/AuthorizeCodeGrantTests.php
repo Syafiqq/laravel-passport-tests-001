@@ -232,6 +232,19 @@ class AuthorizeCodeGrantTests extends TestCase
         self::assertThat($array, self::arrayHasKey('code'));
         self::assertThat($array, self::arrayHasKey('state'));
     }
+
+    public function test_it_retrieve_code_with_no_authorization_request__ok__redirect()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $response = $this->actingAs($this->user)->post('/oauth/authorize', [
+            '_token' => csrf_token(),
+            'state' => $this->token,
+            'client_id' => $this->client->{'id'},
+        ]);
+        var_dump($response);
+        self::assertThat($response->status(), self::equalTo(500));
+        self::assertThat($response->content(), self::equalTo('Authorization request was not present in the session.'));
+    }
 }
 
 ?>
