@@ -70,6 +70,19 @@ class ImplicitGrantTests extends TestCase
         $response = $this->actingAs($this->user)->get('/oauth/authorize');
         self::assertThat($response->status(), self::equalTo(400));
     }
+
+    public function test_it_access_authorize_route_with_wrong_arguments__unauthorized()
+    {
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => 'client-id',
+            'redirect_uri' => 'redirect-uri',
+            'scope' => 'scope',
+            'state' => 'token',
+        ]);
+        $response = $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        self::assertThat($response->status(), self::equalTo(401));
+    }
 }
 
 ?>
