@@ -11,7 +11,7 @@ namespace Tests\Feature\Api\Grant;
 
 
 use App\User;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AuthorizeCodeGrantTests extends TestCase
@@ -21,6 +21,7 @@ class AuthorizeCodeGrantTests extends TestCase
      */
     private $token;
     private $user;
+    private $client;
 
     protected function setUp(): void
     {
@@ -28,11 +29,14 @@ class AuthorizeCodeGrantTests extends TestCase
         $this->startSession();
         $this->setToken();
         $this->setUser();
+        $this->setUpClient();
     }
 
     protected function tearDown(): void
     {
         $this->flushSession();
+        $this->tearDownAccessToken();
+        $this->tearDownSession();
         parent::tearDown();
     }
 
@@ -44,6 +48,21 @@ class AuthorizeCodeGrantTests extends TestCase
     private function setUser()
     {
         $this->user = User::first();
+    }
+
+    private function setUpClient()
+    {
+        $this->client = DB::table('oauth_clients')->where('name', 'AuthorizeCode Grant Client')->first();
+    }
+
+    private function tearDownAccessToken()
+    {
+        DB::table('oauth_access_tokens')->delete();
+    }
+
+    private function tearDownSession()
+    {
+        DB::table('sessions')->delete();
     }
 
     public function test_it_generate_csrf_token()
