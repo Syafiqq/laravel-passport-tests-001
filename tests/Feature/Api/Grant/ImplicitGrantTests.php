@@ -217,24 +217,6 @@ class ImplicitGrantTests extends TestCase
         self::assertThat($response->status(), self::equalTo(500));
         self::assertThat($response->content(), self::equalTo('Authorization request was not present in the session.'));
     }
-
-    public function test_it_access_token_route_with_no_arguments_provided__bad_request()
-    {
-        $response = $this->post('/oauth/token');
-        self::assertThat($response->status(), self::equalTo(400));
-    }
-
-    public function test_it_access_token_route_with_wrong_arguments__unauthorized()
-    {
-        $response = $this->post('/oauth/token', [
-            'grant_type' => 'authorization_code',
-            'client_id' => 'client-id',
-            'client_secret' => 'client-secret',
-            'redirect_uri' => 'http://example.com/callback',
-            'code' => 'code',
-        ]);
-        self::assertThat($response->status(), self::equalTo(401));
-    }
 }
 
 ?>
