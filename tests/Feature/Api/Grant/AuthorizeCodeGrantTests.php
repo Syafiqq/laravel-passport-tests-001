@@ -40,12 +40,12 @@ class AuthorizeCodeGrantTests extends TestCase
 
     public function test_it_generate_csrf_token()
     {
-        Session::start();
+        $this->startSession();
         $token = csrf_token();
 
         self::assertThat($token, self::logicalNot(self::isNull()));
         var_dump($token);
-        Session::flush();
+        $this->flushSession();
     }
 }
 
