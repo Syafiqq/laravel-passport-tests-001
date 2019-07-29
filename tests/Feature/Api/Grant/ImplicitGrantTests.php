@@ -10,11 +10,60 @@
 namespace Tests\Feature\Api\Grant;
 
 
+use App\User;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ImplicitGrantTests extends TestCase
 {
+    /**
+     * @var string
+     */
+    private $token;
+    private $user;
+    private $client;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->startSession();
+        $this->setToken();
+        $this->setUser();
+        $this->setUpClient();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->flushSession();
+        $this->tearDownAccessToken();
+        $this->tearDownSession();
+        parent::tearDown();
+    }
+
+    private function setToken()
+    {
+        $this->token = csrf_token();
+    }
+
+    private function setUser()
+    {
+        $this->user = User::first();
+    }
+
+    private function setUpClient()
+    {
+        $this->client = DB::table('oauth_clients')->where('name', 'Implicit Grant Client')->first();
+    }
+
+    private function tearDownAccessToken()
+    {
+        DB::table('oauth_access_tokens')->delete();
+    }
+
+    private function tearDownSession()
+    {
+        DB::table('sessions')->delete();
+    }
 }
 
 ?>
