@@ -115,6 +115,21 @@ class ImplicitGrantTests extends TestCase
         var_dump($response);
         self::assertThat($response->status(), self::equalTo(302));
     }
+
+    public function test_it_access_authorize_route_with_no_scope__ok()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $this->client->{'id'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'state' => $this->token,
+        ]);
+        $response = $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        var_dump($query);
+        var_dump($response);
+        self::assertThat($response->status(), self::equalTo(200));
+    }
 }
 
 ?>
