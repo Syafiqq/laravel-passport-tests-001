@@ -95,7 +95,7 @@ class PasswordGrantTests extends TestCase
             'client_secret' => $this->client->{'secret'},
             'username' => $this->user->{'email'},
             'password' => $this->user->{'password'},
-            'scope' => '<<==this is wrong scope==>>',
+            'scope' => 'this_is_wrong_scope',
         ];
 
         $response = $this->post('/oauth/token', $body);

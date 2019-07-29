@@ -80,7 +80,7 @@ class ClientCredentialsGrantTests extends TestCase
             'grant_type' => 'client_credentials',
             'client_id' => $this->client->{'id'},
             'client_secret' => $this->client->{'secret'},
-            'scope' => '<<==this is wrong scope==>>',
+            'scope' => 'this_is_wrong_scope',
         ];
 
         $response = $this->post('/oauth/token', $body);
