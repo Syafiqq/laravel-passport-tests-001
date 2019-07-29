@@ -305,6 +305,7 @@ class AuthorizeCodeGrantTests extends TestCase
     public function test_it_access_token_route_with_wrong_code__bad_request()
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $this->getCompleteAuthorization();
         $body = [
             'grant_type' => 'authorization_code',
             'client_id' => $this->client->{'id'},
@@ -323,6 +324,7 @@ class AuthorizeCodeGrantTests extends TestCase
     public function test_it_access_token_route_with_no_code__bad_request()
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $this->getCompleteAuthorization();
         $body = [
             'grant_type' => 'authorization_code',
             'client_id' => $this->client->{'id'},
@@ -340,6 +342,7 @@ class AuthorizeCodeGrantTests extends TestCase
     public function test_it_access_token_route_with_empty_code__bad_request()
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $this->getCompleteAuthorization();
         $body = [
             'grant_type' => 'authorization_code',
             'client_id' => $this->client->{'id'},
