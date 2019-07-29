@@ -64,6 +64,14 @@ class AuthorizeCodeGrantTests extends TestCase
         $response->assertRedirect('/login');
         var_dump($response);
     }
+
+    public function test_it_not_redirected_to_login()
+    {
+        $response = $this->actingAs($this->user)->get('/oauth/authorize');
+        self::assertThat($response, self::logicalNot(self::isNull()));
+        self::assertThat($response->status(), self::logicalNot(self::equalTo(302)));
+        var_dump($response);
+    }
 }
 
 ?>
