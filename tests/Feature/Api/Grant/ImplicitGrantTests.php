@@ -74,7 +74,7 @@ class ImplicitGrantTests extends TestCase
     public function test_it_access_authorize_route_with_wrong_arguments__unauthorized()
     {
         $query = http_build_query([
-            'response_type' => 'code',
+            'response_type' => 'token',
             'client_id' => 'client-id',
             'redirect_uri' => 'redirect-uri',
             'scope' => 'scope',
@@ -120,7 +120,7 @@ class ImplicitGrantTests extends TestCase
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
         $query = http_build_query([
-            'response_type' => 'code',
+            'response_type' => 'token',
             'client_id' => $this->client->{'id'},
             'redirect_uri' => $this->client->{'redirect'},
             'state' => $this->token,
@@ -135,7 +135,7 @@ class ImplicitGrantTests extends TestCase
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
         $query = http_build_query([
-            'response_type' => 'code',
+            'response_type' => 'token',
             'client_id' => $this->client->{'id'},
             'redirect_uri' => $this->client->{'redirect'},
             'scope' => '',
