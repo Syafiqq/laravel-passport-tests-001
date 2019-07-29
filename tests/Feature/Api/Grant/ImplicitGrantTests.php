@@ -64,6 +64,12 @@ class ImplicitGrantTests extends TestCase
     {
         DB::table('sessions')->delete();
     }
+
+    public function test_it_access_authorize_route_with_no_arguments_provided__bad_request()
+    {
+        $response = $this->actingAs($this->user)->get('/oauth/authorize');
+        self::assertThat($response->status(), self::equalTo(400));
+    }
 }
 
 ?>
