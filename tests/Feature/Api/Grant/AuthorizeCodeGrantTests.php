@@ -55,6 +55,15 @@ class AuthorizeCodeGrantTests extends TestCase
         var_dump($token);
         $this->flushSession();
     }
+
+    public function test_it_redirected_to_login()
+    {
+        $response = $this->get('/oauth/authorize');
+        self::assertThat($response, self::logicalNot(self::isNull()));
+        self::assertThat($response->status(), self::equalTo(302));
+        $response->assertRedirect('/login');
+        var_dump($response);
+    }
 }
 
 ?>
