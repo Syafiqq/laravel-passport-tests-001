@@ -18,9 +18,11 @@ class OauthClientSeeder extends Seeder
             ->where('name', 'Password Grant Client')
             ->orWhere('name','ClientCredentials Grant Client')
             ->orWhere('name','AuthorizeCode Grant Client')
+            ->orWhere('name','Implicit Grant Client')
             ->delete();
         Artisan::call('passport:client', ['--client' => true, '--name' => 'ClientCredentials Grant Client']);
         Artisan::call('passport:client', ['--password' => true, '--name' => 'Password Grant Client', '--redirect_uri' => url('/')]);
         Artisan::call('passport:client', ['--name' => 'AuthorizeCode Grant Client', '--redirect_uri' => url('/'), '--user_id' => $user->{'id'}]);
+        Artisan::call('passport:client', ['--name' => 'Implicit Grant Client', '--redirect_uri' => url('/'), '--user_id' => $user->{'id'}]);
     }
 }
