@@ -15,6 +15,29 @@ use Tests\TestCase;
 
 class AuthorizeCodeGrantTests extends TestCase
 {
+    /**
+     * @var string
+     */
+    private $token;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->startSession();
+        $this->setToken();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->flushSession();
+        parent::tearDown();
+    }
+
+    private function setToken()
+    {
+        $this->token = csrf_token();
+    }
+
     public function test_it_generate_csrf_token()
     {
         Session::start();
