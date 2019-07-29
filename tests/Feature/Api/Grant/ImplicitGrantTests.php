@@ -100,6 +100,21 @@ class ImplicitGrantTests extends TestCase
         self::assertThat($response->status(), self::equalTo(200));
     }
 
+    public function test_it_access_authorize_route_with_wrong_scope__found_but_error()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $query = http_build_query([
+            'response_type' => 'token',
+            'client_id' => $this->client->{'id'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'scope' => 'this_is_wrong_scope',
+            'state' => $this->token,
+        ]);
+        $response = $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        var_dump($query);
+        var_dump($response);
+        self::assertThat($response->status(), self::equalTo(302));
+    }
 }
 
 ?>
