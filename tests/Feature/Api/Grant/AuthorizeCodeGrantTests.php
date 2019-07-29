@@ -337,6 +337,24 @@ class AuthorizeCodeGrantTests extends TestCase
         self::assertThat($response->json('hint'), self::equalTo('Check the `code` parameter'));
     }
 
+    public function test_it_access_token_route_with_empty_code__bad_request()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $body = [
+            'grant_type' => 'authorization_code',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'code' => '',
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(400));
+        self::assertThat($response->json('hint'), self::equalTo('Check the `code` parameter'));
+    }
+
 }
 
 ?>
