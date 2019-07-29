@@ -10,6 +10,7 @@
 namespace Tests\Feature\Api\Grant;
 
 
+use App\User;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
@@ -19,12 +20,14 @@ class AuthorizeCodeGrantTests extends TestCase
      * @var string
      */
     private $token;
+    private $user;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->startSession();
         $this->setToken();
+        $this->setUser();
     }
 
     protected function tearDown(): void
@@ -36,6 +39,11 @@ class AuthorizeCodeGrantTests extends TestCase
     private function setToken()
     {
         $this->token = csrf_token();
+    }
+
+    private function setUser()
+    {
+        $this->user = User::first();
     }
 
     public function test_it_generate_csrf_token()
