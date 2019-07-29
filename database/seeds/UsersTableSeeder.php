@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 /**
  * This <laravel-passport> project created by :
@@ -19,9 +20,24 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = factory(App\User::class, 3)->make();
-        Log::debug(var_export($users, true));
-        foreach ($users as &$user){
+        // @formatter:off
+        $raw = [
+            ['name' => 'user1', 'email' => 'user1@mail.com'],
+            ['name' => 'user2', 'email' => 'user2@mail.com'],
+            ['name' => 'user3', 'email' => 'user3@mail.com'],
+            ['name' => 'user4', 'email' => 'user4@mail.com'],
+        ];
+        // @formatter:on
+
+        DB::table('users')->whereIn('email', Arr::pluck($raw, 'email'));
+
+        $users = factory(App\User::class, 4)->make();
+        for ($i = -1, $is = count($users); ++$i < $is;)
+        {
+            /** @var \App\User $user */
+            $user = $users[$i];
+            $user->{'name'} = $raw[$i]['name'];
+            $user->{'email'} = $raw[$i]['email'];
             $user->save();
         }
     }
