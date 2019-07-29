@@ -280,6 +280,28 @@ class AuthorizeCodeGrantTests extends TestCase
         ]);
         self::assertThat($response->status(), self::equalTo(401));
     }
+
+    public function test_it_access_token_route_with_right_arguments__ok()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $request = $this->getCompleteAuthorization();
+        $body = [
+            'grant_type' => 'authorization_code',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'code' => $request['code'],
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(200));
+        $access_token = DB::table('oauth_access_tokens')->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
+    }
+
 }
 
 ?>
