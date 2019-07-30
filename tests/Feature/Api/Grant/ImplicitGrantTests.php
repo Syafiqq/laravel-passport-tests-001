@@ -47,7 +47,7 @@ class ImplicitGrantTests extends TestCase
 
     private function setUser()
     {
-        $this->user = User::first();
+        $this->user = User::where('email', 'user1@mail.com')->first();
     }
 
     private function setUpClient()

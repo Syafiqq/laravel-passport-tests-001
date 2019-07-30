@@ -42,7 +42,7 @@ class PasswordGrantTests extends TestCase
 
     private function setUpUser()
     {
-        $this->user = User::first();
+        $this->user = User::where('email', 'user1@mail.com')->first();
         $this->user->{'password'} = 'password';
     }
 

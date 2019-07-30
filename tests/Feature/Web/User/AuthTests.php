@@ -22,7 +22,7 @@ class AuthTests extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::first();
+        $this->user = User::where('email', 'user1@mail.com')->first();
         self::assertThat($this->user, self::logicalNot(self::isNull()));
     }
 
