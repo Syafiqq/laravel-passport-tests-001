@@ -10,10 +10,29 @@
 namespace Tests\Feature\Api\User;
 
 
+use App\User;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
+    private $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = User::where('email', 'user1@mail.com')->first();
+        $this->user->{'password'} = 'password';
+        self::assertThat($this->user, self::logicalNot(self::isNull()));
+    }
+
+    protected function tearDown(): void
+    {
+        DB::table('sessions')->delete();
+        parent::tearDown();
+    }
+
     /**
      * A basic test example.
      *
@@ -22,8 +41,8 @@ class AuthTest extends TestCase
     public function test_it_success_get_token_with_right_credential()
     {
         $response = $this->json('POST', 'api/login', [
-            'email' => 'miracle.kub@example.net',
-            'password' => 'password'
+            'email' => $this->user->{'email'},
+            'password' => $this->user->{'password'},
         ]);
 
         var_dump($response->json());
@@ -38,8 +57,8 @@ class AuthTest extends TestCase
     public function test_it_success_access_detail_provided_token()
     {
         $response = $this->json('POST', 'api/login', [
-            'email' => 'miracle.kub@example.net',
-            'password' => 'password'
+            'email' => $this->user->{'email'},
+            'password' => $this->user->{'password'},
         ]);
 
         self::assertEquals($response->getStatusCode(), 200);
@@ -58,8 +77,8 @@ class AuthTest extends TestCase
     public function test_it_fail_get_token_with_wrong_credential()
     {
         $response = $this->json('POST', 'api/login', [
-            'email' => 'miracle.kub@example.com',
-            'password' => 'password'
+            'email' => $this->user->{'email'},
+            'password' => $this->user->{'password'},
         ]);
 
         var_dump($response->json());
