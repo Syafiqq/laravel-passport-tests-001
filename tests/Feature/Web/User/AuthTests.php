@@ -38,7 +38,7 @@ class AuthTests extends TestCase
     {
         $response = $this->post('/login', [
             'email' => $this->user->{'email'},
-            'password' => 'password'
+            'password' => $this->user->{'password'}
         ]);
         $response = $this->get('/login');
         // var_dump($response);
@@ -50,7 +50,7 @@ class AuthTests extends TestCase
     {
         $response = $this->post('/login', [
             'email' => $this->user->{'email'},
-            'password' => 'password'
+            'password' => $this->user->{'password'}
         ]);
         $response = $this->post('/logout');
         // var_dump($response);
@@ -62,7 +62,7 @@ class AuthTests extends TestCase
     {
         $response = $this->post('/login', [
             'email' => $this->user->{'email'},
-            'password' => 'password'
+            'password' => $this->user->{'password'}
         ]);
 
         $response = $this->post('/logout');
