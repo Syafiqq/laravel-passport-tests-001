@@ -269,6 +269,52 @@ class AuthorizeCodeGrantTest extends TestCase
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
 
+    public function test_it_retrieve_code_with_right_argument_but_wrong_user_id__ok__redirect()
+    {
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => 2
+            ]);
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_client->{'user_id'}, self::equalTo(2));
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $this->client->{'id'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'scope' => '*',
+            'state' => $this->token,
+        ]);
+        $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        $response = $this->actingAs($this->user)->post('/oauth/authorize', [
+            '_token' => csrf_token(),
+            'state' => $this->token,
+            'client_id' => $this->client->{'id'},
+        ]);
+        $location = $response->headers->get('Location');
+        parse_str(parse_url($location, PHP_URL_QUERY), $array);
+        var_dump($array);
+        self::assertThat($response->status(), self::equalTo(302));
+        self::assertThat($array, self::arrayHasKey('code'));
+        self::assertThat($array, self::arrayHasKey('state'));
+        $access_token = DB::table('oauth_auth_codes')
+            ->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => 1
+            ]);
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_client->{'user_id'}, self::equalTo(1));
+    }
+
     public function test_it_retrieve_code_with_no_authorization_request__ok__redirect()
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
