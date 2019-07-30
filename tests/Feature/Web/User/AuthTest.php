@@ -14,7 +14,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class AuthTests extends TestCase
+class AuthTest extends TestCase
 {
     private $user;
 

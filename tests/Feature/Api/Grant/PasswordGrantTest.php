@@ -14,7 +14,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class PasswordGrantTests extends TestCase
+class PasswordGrantTest extends TestCase
 {
     /**
      * @var \Illuminate\Database\Eloquent\Model|object|null

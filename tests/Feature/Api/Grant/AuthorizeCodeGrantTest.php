@@ -14,7 +14,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class AuthorizeCodeGrantTests extends TestCase
+class AuthorizeCodeGrantTest extends TestCase
 {
     /**
      * @var string

@@ -14,7 +14,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class RefreshGrantTests extends TestCase
+class RefreshGrantTest extends TestCase
 {
     /**
      * @var \Illuminate\Database\Eloquent\Model|object|null

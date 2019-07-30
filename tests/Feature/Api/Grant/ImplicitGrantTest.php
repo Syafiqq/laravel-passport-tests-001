@@ -14,7 +14,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class ImplicitGrantTests extends TestCase
+class ImplicitGrantTest extends TestCase
 {
     /**
      * @var string

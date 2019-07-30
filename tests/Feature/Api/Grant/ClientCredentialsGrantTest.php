@@ -13,7 +13,7 @@ namespace Tests\Feature\Api;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class ClientCredentialsGrantTests extends TestCase
+class ClientCredentialsGrantTest extends TestCase
 {
     /**
      * @var \Illuminate\Database\Eloquent\Model|object|null
