@@ -27,6 +27,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+        Passport::tokensCan([
+            'scope-1' => 'Scope 1',
+            'scope-2' => 'Scope 2',
+        ]);
         Passport::routes();
         Passport::enableImplicitGrant();
     }
