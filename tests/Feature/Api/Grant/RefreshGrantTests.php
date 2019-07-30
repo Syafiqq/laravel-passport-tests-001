@@ -233,6 +233,20 @@ class RefreshGrantTests extends TestCase
         self::assertThat($access_token->count(), self::equalTo(2));
         self::assertThat($access_token->slice(0)->take(1)->first()->{'scopes'}, self::equalTo($access_token->slice(1)->take(1)->first()->{'scopes'}));
     }
+
+    public function test_it_access_refresh_route_with_no_refresh_token__bad_request()
+    {
+        $token = $this->access_token_from_password_client();
+        self::assertThat($token, self::logicalNot(self::isNull()));
+        $body = [
+            'grant_type' => 'refresh_token',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'scope' => 'scope-1 scope-2',
+        ];
+        $response = $this->post('/oauth/token', $body);
+        self::assertThat($response->status(), self::equalTo(400));
+    }
 }
 
 ?>
