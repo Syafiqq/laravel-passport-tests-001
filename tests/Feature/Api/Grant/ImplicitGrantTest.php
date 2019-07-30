@@ -209,7 +209,7 @@ class ImplicitGrantTest extends TestCase
         self::assertThat($array, self::arrayHasKey('state'));
     }
 
-    public function test_it_retrieve_code_with_no_authorization_request__ok__redirect()
+    public function test_it_retrieve_code_with_no_authorization_request__ok__internal_server_error()
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
         $response = $this->actingAs($this->user)->post('/oauth/authorize', [
