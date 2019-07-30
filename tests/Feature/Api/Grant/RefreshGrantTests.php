@@ -180,6 +180,33 @@ class RefreshGrantTests extends TestCase
         $response = $this->post('/oauth/token', $body);
         self::assertThat($response->status(), self::equalTo(401));
     }
+
+    public function test_it_access_refresh_route_with_password_client_and_right_argument_but_empty_scope__ok()
+    {
+        $token = $this->access_token_from_password_client();
+        self::assertThat($token, self::logicalNot(self::isNull()));
+        $body = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $token['refresh_token'],
+            'client_id' => $this->passwordClient->{'id'},
+            'client_secret' => $this->passwordClient->{'secret'},
+            'scope' => '',
+        ];
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        $result = $response->json();
+        self::assertThat($result, self::arrayHasKey('token_type'));
+        self::assertThat($result, self::arrayHasKey('expires_in'));
+        self::assertThat($result, self::arrayHasKey('access_token'));
+        self::assertThat($result, self::arrayHasKey('refresh_token'));
+        self::assertThat($response->status(), self::equalTo(200));
+        $access_token = DB::table('oauth_access_tokens')
+            ->get();
+        var_dump($access_token);
+        self::assertThat($access_token->count(), self::equalTo(2));
+        self::assertThat($access_token->slice(0)->take(1)->first()->{'scopes'}, self::equalTo($access_token->slice(1)->take(1)->first()->{'scopes'}));
+    }
 }
 
 ?>
