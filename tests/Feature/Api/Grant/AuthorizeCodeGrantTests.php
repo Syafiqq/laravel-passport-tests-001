@@ -378,6 +378,43 @@ class AuthorizeCodeGrantTests extends TestCase
         self::assertThat($response->json('hint'), self::equalTo('Check the `code` parameter'));
     }
 
+    public function test_it_access_token_route_with_revoked_auth_codes__bad_request()
+    {
+        $request = $this->getCompleteAuthorization();
+        DB::table('oauth_auth_codes')
+            ->where('user_id', $this->client->{'user_id'})
+            ->where('client_id', $this->client->{'id'})
+            ->update([
+                'revoked' => 1
+            ]);
+        $code = DB::table('oauth_auth_codes')->first();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($code->{'revoked'}, self::equalTo(1));
+        $body = [
+            'grant_type' => 'authorization_code',
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'code' => $request['code'],
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->json('hint'), self::equalTo('Authorization code has been revoked'));
+        self::assertThat($response->status(), self::equalTo(400));
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::isNull());
+        DB::table('oauth_auth_codes')
+            ->where('user_id', $this->client->{'user_id'})
+            ->where('client_id', $this->client->{'id'})
+            ->update([
+                'revoked' => 0
+            ]);
+    }
+
     public function test_it_access_token_route_with_revoked_client__unauthorized()
     {
         $request = $this->getCompleteAuthorization();
