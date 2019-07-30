@@ -53,4 +53,28 @@ class PersonalAccessGrantTest extends TestCase
         $personal = DB::table('oauth_access_tokens')->get();
         self::assertThat($personal->count(), self::equalTo(1));
     }
+
+    public function test_it_generate_access_token_with_user_id_token_explicit__ok()
+    {
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => $this->user->{'id'}
+            ]);
+        $this->setUpClient();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->client->{'user_id'}, self::equalTo(1));
+        $access_token = $this->user->createToken('token')->accessToken;
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
+        $personal = DB::table('oauth_access_tokens')->get();
+        self::assertThat($personal->count(), self::equalTo(1));
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => null
+            ]);
+        $this->setUpClient();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->client->{'user_id'}, self::isNull());
+    }
 }
