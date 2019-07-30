@@ -262,6 +262,39 @@ class RefreshGrantTests extends TestCase
         $response = $this->post('/oauth/token', $body);
         self::assertThat($response->status(), self::equalTo(401));
     }
+
+    public function test_it_access_refresh_route_with_revoked_refresh_token__unauthorized()
+    {
+        $token = $this->access_token_from_client();
+        DB::table('oauth_refresh_tokens')
+            ->update([
+                'revoked' => 1
+            ]);
+        $refresh = DB::table('oauth_refresh_tokens')
+            ->first();
+        self::assertThat($refresh, self::logicalNot(self::isNull()));
+        self::assertThat($refresh->{'revoked'}, self::equalTo(1));
+        $body = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $token['refresh_token'],
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
+            'scope' => 'scope-1 scope-2',
+        ];
+
+        $response = $this->post('/oauth/token', $body);
+        var_dump($body);
+        var_dump($response->json());
+        self::assertThat($response->status(), self::equalTo(401));
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
+        DB::table('oauth_refresh_tokens')
+            ->update([
+                'revoked' => 0
+            ]);
+    }
 }
 
 ?>
