@@ -33,5 +33,6 @@ class AuthServiceProvider extends ServiceProvider
         ]);
         Passport::routes();
         Passport::enableImplicitGrant();
+        Passport::personalAccessClientId('client-id');
     }
 }
