@@ -23,6 +23,7 @@ class AuthTests extends TestCase
         parent::setUp();
 
         $this->user = User::where('email', 'user1@mail.com')->first();
+        $this->user->{'password'} = 'password';
         self::assertThat($this->user, self::logicalNot(self::isNull()));
     }
 
