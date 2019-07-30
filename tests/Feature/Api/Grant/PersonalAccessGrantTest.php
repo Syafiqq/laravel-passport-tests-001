@@ -151,4 +151,39 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_personal_access, self::logicalNot(self::isNull()));
         self::assertThat($_client, self::logicalNot(self::isNull()));
     }
+
+    public function test_it_generate_access_token_with_no_last_personal_token__ok()
+    {
+        $personal_access = DB::table('oauth_personal_access_clients')
+            ->where('client_id', $this->client->{'id'})
+            ->first();
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->delete();
+        $_personal_access = DB::table('oauth_personal_access_clients')
+            ->where('client_id', $this->client->{'id'})
+            ->first();
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_personal_access, self::logicalNot(self::isNull()));
+        self::assertThat($_client, self::isNull());
+        $gate = false;
+        try{
+            $this->user->createToken('token')->accessToken;
+        }
+        catch (\ErrorException $e){
+            $gate = true;
+        }
+        self::assertThat($gate, self::isTrue());
+        DB::table('oauth_clients')->insert(json_decode(json_encode($this->client), true));
+        $_personal_access = DB::table('oauth_personal_access_clients')
+            ->where('client_id', $this->client->{'id'})
+            ->first();
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_personal_access, self::logicalNot(self::isNull()));
+        self::assertThat($_client, self::logicalNot(self::isNull()));
+    }
 }
