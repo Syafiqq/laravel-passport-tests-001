@@ -36,6 +36,7 @@ class AuthorizeCodeGrantTests extends TestCase
     {
         $this->flushSession();
         $this->tearDownAccessToken();
+        $this->tearDownAuthCodes();
         $this->tearDownSession();
         parent::tearDown();
     }
@@ -64,6 +65,11 @@ class AuthorizeCodeGrantTests extends TestCase
         DB::table('oauth_access_tokens')->delete();
     }
 
+    private function tearDownAuthCodes()
+    {
+        DB::table('oauth_auth_codes')->delete();
+    }
+
     private function tearDownSession()
     {
         DB::table('sessions')->delete();
@@ -86,6 +92,10 @@ class AuthorizeCodeGrantTests extends TestCase
         ]);
         $location = $response->headers->get('Location');
         parse_str(parse_url($location, PHP_URL_QUERY), $array);
+        $access_token = DB::table('oauth_auth_codes')
+            ->first();
+        var_dump($access_token);
+        self::assertThat($access_token,self::logicalNot(self::isNull()));
         return $array;
     }
 
@@ -253,6 +263,10 @@ class AuthorizeCodeGrantTests extends TestCase
         self::assertThat($response->status(), self::equalTo(302));
         self::assertThat($array, self::arrayHasKey('code'));
         self::assertThat($array, self::arrayHasKey('state'));
+        $access_token = DB::table('oauth_auth_codes')
+            ->first();
+        var_dump($access_token);
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
 
     public function test_it_retrieve_code_with_no_authorization_request__ok__redirect()
