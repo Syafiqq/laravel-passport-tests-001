@@ -19,7 +19,7 @@ class RefreshGrantTests extends TestCase
     /**
      * @var \Illuminate\Database\Eloquent\Model|object|null
      */
-    private $passwordClient;
+    private $client;
     private $user;
 
     protected function setUp(): void
@@ -37,7 +37,7 @@ class RefreshGrantTests extends TestCase
 
     private function setUpClient()
     {
-        $this->passwordClient = DB::table('oauth_clients')
+        $this->client = DB::table('oauth_clients')
             ->where('name', 'Password Grant Client')
             ->first();
     }
@@ -51,11 +51,11 @@ class RefreshGrantTests extends TestCase
 
     public function access_token_from_password_client(): array
     {
-        self::assertThat($this->passwordClient, self::logicalNot(self::isNull()));
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'password',
-            'client_id' => $this->passwordClient->{'id'},
-            'client_secret' => $this->passwordClient->{'secret'},
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
             'username' => $this->user->{'email'},
             'password' => $this->user->{'password'},
             'scope' => 'scope-1 scope-2',
@@ -84,8 +84,8 @@ class RefreshGrantTests extends TestCase
         $body = [
             'grant_type' => 'refresh_token',
             'refresh_token' => $token['refresh_token'],
-            'client_id' => $this->passwordClient->{'id'},
-            'client_secret' => $this->passwordClient->{'secret'},
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
             'scope' => 'scope-1 scope-2',
         ];
         $response = $this->post('/oauth/token', $body);
@@ -113,8 +113,8 @@ class RefreshGrantTests extends TestCase
         $body = [
             'grant_type' => 'refresh_token',
             'refresh_token' => $token['refresh_token'],
-            'client_id' => $this->passwordClient->{'id'},
-            'client_secret' => $this->passwordClient->{'secret'},
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
             'scope' => 'scope-1',
         ];
         $response = $this->post('/oauth/token', $body);
@@ -146,8 +146,8 @@ class RefreshGrantTests extends TestCase
         $body = [
             'grant_type' => 'refresh_token',
             'refresh_token' => $token['refresh_token'],
-            'client_id' => $this->passwordClient->{'id'},
-            'client_secret' => $this->passwordClient->{'secret'},
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
             'scope' => 'scope-1 scope-2',
         ];
         $response = $this->post('/oauth/token', $body);
@@ -188,8 +188,8 @@ class RefreshGrantTests extends TestCase
         $body = [
             'grant_type' => 'refresh_token',
             'refresh_token' => $token['refresh_token'],
-            'client_id' => $this->passwordClient->{'id'},
-            'client_secret' => $this->passwordClient->{'secret'},
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
             'scope' => '',
         ];
         $response = $this->post('/oauth/token', $body);
@@ -215,8 +215,8 @@ class RefreshGrantTests extends TestCase
         $body = [
             'grant_type' => 'refresh_token',
             'refresh_token' => $token['refresh_token'],
-            'client_id' => $this->passwordClient->{'id'},
-            'client_secret' => $this->passwordClient->{'secret'},
+            'client_id' => $this->client->{'id'},
+            'client_secret' => $this->client->{'secret'},
         ];
         $response = $this->post('/oauth/token', $body);
         var_dump($body);
