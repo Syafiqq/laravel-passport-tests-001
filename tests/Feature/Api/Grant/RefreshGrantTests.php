@@ -32,6 +32,7 @@ class RefreshGrantTests extends TestCase
     protected function tearDown(): void
     {
         DB::table('oauth_access_tokens')->delete();
+        DB::table('oauth_refresh_tokens')->delete();
         parent::tearDown();
     }
 
