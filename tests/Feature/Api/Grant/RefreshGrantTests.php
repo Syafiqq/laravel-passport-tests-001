@@ -58,7 +58,7 @@ class RefreshGrantTests extends TestCase
             'client_secret' => $this->passwordClient->{'secret'},
             'username' => $this->user->{'email'},
             'password' => $this->user->{'password'},
-            'scope' => '*',
+            'scope' => 'scope-1 scope-2',
         ];
 
         $response = $this->post('/oauth/token', $body);
