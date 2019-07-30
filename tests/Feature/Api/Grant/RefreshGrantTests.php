@@ -166,7 +166,7 @@ class RefreshGrantTests extends TestCase
         self::assertThat($access_token->sum('revoked'), self::equalTo(1));
     }
 
-    public function test_it_access_refresh_route_with_password_client_and_wrong_argument__ok()
+    public function test_it_access_refresh_route_with_password_client_and_wrong_argument__unauthorized()
     {
         $token = $this->access_token_from_password_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
