@@ -77,7 +77,7 @@ class RefreshGrantTests extends TestCase
         return $result;
     }
 
-    public function test_it_access_refresh_route_with_password_client_and_right_argument__ok()
+    public function test_it_access_refresh_route_with_right_argument__ok()
     {
         $token = $this->access_token_from_password_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
@@ -106,7 +106,7 @@ class RefreshGrantTests extends TestCase
     /*
     * //Must reduced
     */
-    public function test_it_access_refresh_route_with_password_client_and_right_argument_but_different_scope__ok()
+    public function test_it_access_refresh_route_with_right_argument_but_different_scope__ok()
     {
         $token = $this->access_token_from_password_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
@@ -166,7 +166,7 @@ class RefreshGrantTests extends TestCase
         self::assertThat($access_token->sum('revoked'), self::equalTo(1));
     }
 
-    public function test_it_access_refresh_route_with_password_client_and_wrong_argument__unauthorized()
+    public function test_it_access_refresh_route_with_wrong_argument__unauthorized()
     {
         $token = $this->access_token_from_password_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
@@ -181,7 +181,7 @@ class RefreshGrantTests extends TestCase
         self::assertThat($response->status(), self::equalTo(401));
     }
 
-    public function test_it_access_refresh_route_with_password_client_and_right_argument_but_empty_scope__ok()
+    public function test_it_access_refresh_route_with_right_argument_but_empty_scope__ok()
     {
         $token = $this->access_token_from_password_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
@@ -208,7 +208,7 @@ class RefreshGrantTests extends TestCase
         self::assertThat($access_token->slice(0)->take(1)->first()->{'scopes'}, self::equalTo($access_token->slice(1)->take(1)->first()->{'scopes'}));
     }
 
-    public function test_it_access_refresh_route_with_password_client_and_right_argument_but_no_scope__ok()
+    public function test_it_access_refresh_route_with_right_argument_but_no_scope__ok()
     {
         $token = $this->access_token_from_password_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
