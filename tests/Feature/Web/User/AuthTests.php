@@ -21,7 +21,7 @@ class AuthTests extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
+        $this->startSession();
         $this->user = User::where('email', 'user1@mail.com')->first();
         $this->user->{'password'} = 'password';
         self::assertThat($this->user, self::logicalNot(self::isNull()));
@@ -29,6 +29,7 @@ class AuthTests extends TestCase
 
     protected function tearDown(): void
     {
+        $this->flushSession();
         DB::table('sessions')->delete();
         parent::tearDown();
     }
@@ -38,7 +39,8 @@ class AuthTests extends TestCase
     {
         $response = $this->post('/login', [
             'email' => $this->user->{'email'},
-            'password' => $this->user->{'password'}
+            'password' => $this->user->{'password'},
+            '_token' => csrf_token(),
         ]);
         $response = $this->get('/login');
         // var_dump($response);
@@ -50,10 +52,12 @@ class AuthTests extends TestCase
     {
         $response = $this->post('/login', [
             'email' => $this->user->{'email'},
-            'password' => $this->user->{'password'}
+            'password' => $this->user->{'password'},
+            '_token' => csrf_token(),
         ]);
-        $response = $this->post('/logout');
-        // var_dump($response);
+        $response = $this->post('/logout', [
+            '_token' => csrf_token(),
+        ]);        // var_dump($response);
         self::assertThat($response->status(), self::equalTo(302));
     }
 
@@ -62,10 +66,13 @@ class AuthTests extends TestCase
     {
         $response = $this->post('/login', [
             'email' => $this->user->{'email'},
-            'password' => $this->user->{'password'}
+            'password' => $this->user->{'password'},
+            '_token' => csrf_token(),
         ]);
 
-        $response = $this->post('/logout');
+        $response = $this->post('/logout', [
+            '_token' => csrf_token(),
+        ]);
         // var_dump($response);
         self::assertThat($response->status(), self::equalTo(302));
     }
