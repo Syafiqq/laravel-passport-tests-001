@@ -49,7 +49,7 @@ class RefreshGrantTests extends TestCase
         $this->user->{'password'} = 'password';
     }
 
-    public function access_token_from_password_client(): array
+    public function access_token_from_client(): array
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
         $body = [
@@ -79,7 +79,7 @@ class RefreshGrantTests extends TestCase
 
     public function test_it_access_refresh_route_with_right_argument__ok()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
@@ -108,7 +108,7 @@ class RefreshGrantTests extends TestCase
     */
     public function test_it_access_refresh_route_with_right_argument_but_different_scope__ok()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
@@ -133,10 +133,10 @@ class RefreshGrantTests extends TestCase
         self::assertThat($access_token->slice(0)->take(1)->first()->{'scopes'}, self::logicalNot(self::equalTo($access_token->slice(1)->take(1)->first()->{'scopes'})));
     }
 
-    public function test_it_access_refresh_route_with_password_client_twice_and_right_argument__ok()
+    public function test_it_access_refresh_route_with_client_twice_and_right_argument__ok()
     {
-        $token = $this->access_token_from_password_client();
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
+        $token = $this->access_token_from_client();
         $access_token = DB::table('oauth_access_tokens')
             ->get();
         var_dump($access_token);
@@ -168,7 +168,7 @@ class RefreshGrantTests extends TestCase
 
     public function test_it_access_refresh_route_with_wrong_argument__unauthorized()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
@@ -183,7 +183,7 @@ class RefreshGrantTests extends TestCase
 
     public function test_it_access_refresh_route_with_right_argument_but_empty_scope__ok()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
@@ -210,7 +210,7 @@ class RefreshGrantTests extends TestCase
 
     public function test_it_access_refresh_route_with_right_argument_but_no_scope__ok()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
@@ -236,7 +236,7 @@ class RefreshGrantTests extends TestCase
 
     public function test_it_access_refresh_route_with_no_refresh_token__bad_request()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
@@ -250,7 +250,7 @@ class RefreshGrantTests extends TestCase
 
     public function test_it_access_refresh_route_with_wrong_refresh_token__unauthorized()
     {
-        $token = $this->access_token_from_password_client();
+        $token = $this->access_token_from_client();
         self::assertThat($token, self::logicalNot(self::isNull()));
         $body = [
             'grant_type' => 'refresh_token',
