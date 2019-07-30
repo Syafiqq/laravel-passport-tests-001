@@ -34,7 +34,9 @@ class ClientCredentialsGrantTests extends TestCase
 
     private function setUpClient()
     {
-        $this->client = DB::table('oauth_clients')->where('name', 'ClientCredentials Grant Client')->first();
+        $this->client = DB::table('oauth_clients')
+            ->where('name', 'ClientCredentials Grant Client')
+            ->first();
     }
 
     public function test_it_access_token_route_with_no_arguments_provided__bad_request()
@@ -68,7 +70,8 @@ class ClientCredentialsGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -87,7 +90,8 @@ class ClientCredentialsGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(400));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::isNull());
     }
@@ -105,7 +109,8 @@ class ClientCredentialsGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -124,7 +129,8 @@ class ClientCredentialsGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -150,7 +156,8 @@ class ClientCredentialsGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(401));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::isNull());
         DB::table('oauth_clients')

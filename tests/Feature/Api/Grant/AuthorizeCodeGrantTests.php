@@ -47,13 +47,16 @@ class AuthorizeCodeGrantTests extends TestCase
 
     private function setUser()
     {
-        $this->user = User::where('email', 'user1@mail.com')->first();
+        $this->user = User::where('email', 'user1@mail.com')
+            ->first();
         $this->user->{'password'} = 'password';
     }
 
     private function setUpClient()
     {
-        $this->client = DB::table('oauth_clients')->where('name', 'AuthorizeCode Grant Client')->first();
+        $this->client = DB::table('oauth_clients')
+            ->where('name', 'AuthorizeCode Grant Client')
+            ->first();
     }
 
     private function tearDownAccessToken()
@@ -217,7 +220,8 @@ class AuthorizeCodeGrantTests extends TestCase
         var_dump($query);
         var_dump($response);
         self::assertThat($response->status(), self::equalTo(401));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::isNull());
         DB::table('oauth_clients')
@@ -298,7 +302,8 @@ class AuthorizeCodeGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -382,7 +387,8 @@ class AuthorizeCodeGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(401));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::isNull());
         DB::table('oauth_clients')

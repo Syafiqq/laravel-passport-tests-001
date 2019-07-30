@@ -37,12 +37,15 @@ class PasswordGrantTests extends TestCase
 
     private function setUpClient()
     {
-        $this->client = DB::table('oauth_clients')->where('name', 'Password Grant Client')->first();
+        $this->client = DB::table('oauth_clients')
+            ->where('name', 'Password Grant Client')
+            ->first();
     }
 
     private function setUpUser()
     {
-        $this->user = User::where('email', 'user1@mail.com')->first();
+        $this->user = User::where('email', 'user1@mail.com')
+            ->first();
         $this->user->{'password'} = 'password';
     }
 
@@ -81,7 +84,8 @@ class PasswordGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -102,7 +106,8 @@ class PasswordGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(400));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::isNull());
     }
@@ -122,7 +127,8 @@ class PasswordGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -143,7 +149,8 @@ class PasswordGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(200));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::logicalNot(self::isNull()));
     }
@@ -171,7 +178,8 @@ class PasswordGrantTests extends TestCase
         var_dump($body);
         var_dump($response->json());
         self::assertThat($response->status(), self::equalTo(401));
-        $access_token = DB::table('oauth_access_tokens')->first();
+        $access_token = DB::table('oauth_access_tokens')
+            ->first();
         var_dump($access_token);
         self::assertThat($access_token, self::isNull());
         DB::table('oauth_clients')
