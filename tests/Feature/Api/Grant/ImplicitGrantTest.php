@@ -209,6 +209,49 @@ class ImplicitGrantTest extends TestCase
         self::assertThat($array, self::arrayHasKey('state'));
     }
 
+    public function test_it_retrieve_code_with_right_argument_but_wrong_user_id__ok__redirect()
+    {
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => 2
+            ]);
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        $query = http_build_query([
+            'response_type' => 'token',
+            'client_id' => $this->client->{'id'},
+            'redirect_uri' => $this->client->{'redirect'},
+            'scope' => '*',
+            'state' => $this->token,
+        ]);
+        $this->actingAs($this->user)->get('/oauth/authorize?' . $query);
+        $response = $this->actingAs($this->user)->post('/oauth/authorize', [
+            '_token' => csrf_token(),
+            'state' => $this->token,
+            'client_id' => $this->client->{'id'},
+        ]);
+        $location = $response->headers->get('Location');
+        parse_str(parse_url($location, PHP_URL_FRAGMENT), $array);
+        var_dump($array);
+        self::assertThat($response->status(), self::equalTo(302));
+        self::assertThat($array, self::arrayHasKey('token_type'));
+        self::assertThat($array, self::arrayHasKey('expires_in'));
+        self::assertThat($array, self::arrayHasKey('access_token'));
+        self::assertThat($array, self::arrayHasKey('state'));
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => 1
+            ]);
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_client->{'user_id'}, self::equalTo(1));
+    }
+
     public function test_it_retrieve_code_with_no_authorization_request__ok__internal_server_error()
     {
         self::assertThat($this->client, self::logicalNot(self::isNull()));
