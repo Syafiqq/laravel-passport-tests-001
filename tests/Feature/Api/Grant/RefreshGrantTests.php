@@ -86,7 +86,7 @@ class RefreshGrantTests extends TestCase
             'refresh_token' => $token['refresh_token'],
             'client_id' => $this->passwordClient->{'id'},
             'client_secret' => $this->passwordClient->{'secret'},
-            'scope' => '*',
+            'scope' => 'scope-1 scope-2',
         ];
         $response = $this->post('/oauth/token', $body);
         var_dump($body);
@@ -148,7 +148,7 @@ class RefreshGrantTests extends TestCase
             'refresh_token' => $token['refresh_token'],
             'client_id' => $this->passwordClient->{'id'},
             'client_secret' => $this->passwordClient->{'secret'},
-            'scope' => '*',
+            'scope' => 'scope-1 scope-2',
         ];
         $response = $this->post('/oauth/token', $body);
         var_dump($body);
