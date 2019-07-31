@@ -23,6 +23,7 @@ class PersonalAccessGrantTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->startSession();
         $this->setUpClient();
         $this->setUpUser();
     }
@@ -30,6 +31,8 @@ class PersonalAccessGrantTest extends TestCase
     protected function tearDown(): void
     {
         DB::table('oauth_access_tokens')->delete();
+        DB::table('sessions')->delete();
+        $this->flushSession();
         parent::tearDown();
     }
 
@@ -201,6 +204,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($this->client, self::logicalNot(self::isNull()));
         self::assertThat($this->user, self::logicalNot(self::isNull()));
         $body = [
+            '_token' => csrf_token(),
             'name' => 'This is my token',
             'scopes' => ['*'],
         ];
@@ -221,6 +225,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($this->client, self::logicalNot(self::isNull()));
         self::assertThat($this->user, self::logicalNot(self::isNull()));
         $body = [
+            '_token' => csrf_token(),
             'name' => 'This is my token',
             'scopes' => [
                 'scope-1'
@@ -254,6 +259,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($this->client->{'user_id'}, self::equalTo(1));
         self::assertThat($this->user, self::logicalNot(self::isNull()));
         $body = [
+            '_token' => csrf_token(),
             'name' => 'This is my token',
             'scopes' => [
                 'scope-1'
@@ -303,6 +309,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_personal_access, self::isNull());
         self::assertThat($_client, self::isNull());
         $body = [
+            '_token' => csrf_token(),
             'name' => 'This is my token',
             'scopes' => ['*'],
         ];
@@ -345,6 +352,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_personal_access, self::isNull());
         self::assertThat($_client, self::logicalNot(self::isNull()));
         $body = [
+            '_token' => csrf_token(),
             'name' => 'This is my token',
             'scopes' => ['*'],
         ];
@@ -386,6 +394,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_personal_access, self::logicalNot(self::isNull()));
         self::assertThat($_client, self::isNull());
         $body = [
+            '_token' => csrf_token(),
             'name' => 'This is my token',
             'scopes' => ['*'],
         ];
