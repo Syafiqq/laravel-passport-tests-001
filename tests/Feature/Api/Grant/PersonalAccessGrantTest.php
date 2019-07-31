@@ -55,6 +55,14 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($personal->count(), self::equalTo(1));
     }
 
+    public function test_it_generate_access_token_with_non_user_id_token_explicit_asterisk__ok()
+    {
+        $access_token = $this->user->createToken('token', ['*'])->accessToken;
+        self::assertThat($access_token, self::logicalNot(self::isNull()));
+        $personal = DB::table('oauth_access_tokens')->get();
+        self::assertThat($personal->count(), self::equalTo(1));
+    }
+
     public function test_it_generate_access_token_with_user_id_token_explicit_explicit__ok()
     {
         DB::table('oauth_clients')
