@@ -241,4 +241,45 @@ class PersonalAccessGrantTest extends TestCase
         }
         self::assertThat($error, self::isFalse());
     }
+
+    public function test_it_generate_access_token_with_user_id_token_implicit_with_specific__ok()
+    {
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => $this->user->{'id'}
+            ]);
+        $this->setUpClient();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->client->{'user_id'}, self::equalTo(1));
+        self::assertThat($this->user, self::logicalNot(self::isNull()));
+        $body = [
+            'name' => 'This is my token',
+            'scopes' => [
+                'scope-1'
+                , 'scope-2'
+            ],
+        ];
+        $error = false;
+        try{
+            $response = $this->actingAs($this->user)->post('/oauth/personal-access-tokens', $body);
+            self::assertThat($response->status(), self::equalTo(200));
+            var_dump($response->json());
+            self::assertThat($response->json(), self::logicalNot(self::isNull()));
+            $personal = DB::table('oauth_access_tokens')->get();
+            self::assertThat($personal->count(), self::equalTo(1));
+        }
+        catch (ValidationException $e){
+            $error = true;
+        }
+        self::assertThat($error, self::isFalse());
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->update([
+                'user_id' => null
+            ]);
+        $this->setUpClient();
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->client->{'user_id'}, self::isNull());
+    }
 }
