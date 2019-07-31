@@ -37,4 +37,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Find the user instance for the given username.
+     *
+     * @param  string  $attr
+     * @return \App\User
+     */
+    public function findForPassport($attr)
+    {
+        return $this->where('email', $attr)->first();
+    }
 }
