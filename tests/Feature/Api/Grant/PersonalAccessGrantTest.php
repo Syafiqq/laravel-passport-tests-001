@@ -6,6 +6,7 @@ namespace Tests\Feature\Api\Grant;
 
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class PersonalAccessGrantTest extends TestCase
@@ -185,5 +186,25 @@ class PersonalAccessGrantTest extends TestCase
             ->first();
         self::assertThat($_personal_access, self::logicalNot(self::isNull()));
         self::assertThat($_client, self::logicalNot(self::isNull()));
+    }
+
+    public function test_it_generate_access_token_with_non_user_id_token_implicit_with_asterisk__invalid()
+    {
+        self::assertThat($this->client, self::logicalNot(self::isNull()));
+        self::assertThat($this->user, self::logicalNot(self::isNull()));
+        $body = [
+            'name' => 'This is my token',
+            'scopes' => '*',
+        ];
+        $error = false;
+        try{
+            $response = $this->actingAs($this->user)->post('/oauth/personal-access-tokens', $body);
+            self::assertThat($response->status(), self::equalTo(302));
+            var_dump($response->json());
+        }
+        catch (ValidationException $e){
+            $error = true;
+        }
+        self::assertThat($error, self::isTrue());
     }
 }
