@@ -202,7 +202,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($this->user, self::logicalNot(self::isNull()));
         $body = [
             'name' => 'This is my token',
-            'scopes' => '*',
+            'scopes' => ['*'],
         ];
         $error = false;
         try{
