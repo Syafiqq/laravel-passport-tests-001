@@ -368,4 +368,45 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_personal_access, self::logicalNot(self::isNull()));
         self::assertThat($_client, self::logicalNot(self::isNull()));
     }
+
+    public function test_it_generate_access_token_with_no_last_personal_token_implicit__error()
+    {
+        $personal_access = DB::table('oauth_personal_access_clients')
+            ->where('client_id', $this->client->{'id'})
+            ->first();
+        DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->delete();
+        $_personal_access = DB::table('oauth_personal_access_clients')
+            ->where('client_id', $this->client->{'id'})
+            ->first();
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_personal_access, self::logicalNot(self::isNull()));
+        self::assertThat($_client, self::isNull());
+        $body = [
+            'name' => 'This is my token',
+            'scopes' => ['*'],
+        ];
+        $error = false;
+        try{
+            $response = $this->actingAs($this->user)->post('/oauth/personal-access-tokens', $body);
+            self::assertThat($response->status(), self::equalTo(302));
+            var_dump($response->json());
+        }
+        catch (ValidationException $e){
+            $error = true;
+        }
+        self::assertThat($error, self::isTrue());
+        DB::table('oauth_clients')->insert(json_decode(json_encode($this->client), true));
+        $_personal_access = DB::table('oauth_personal_access_clients')
+            ->where('client_id', $this->client->{'id'})
+            ->first();
+        $_client = DB::table('oauth_clients')
+            ->where('id', $this->client->{'id'})
+            ->first();
+        self::assertThat($_personal_access, self::logicalNot(self::isNull()));
+        self::assertThat($_client, self::logicalNot(self::isNull()));
+    }
 }
