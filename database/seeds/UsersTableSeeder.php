@@ -29,7 +29,9 @@ class UsersTableSeeder extends Seeder
         ];
         // @formatter:on
 
-        DB::table('users')->whereIn('email', Arr::pluck($raw, 'email'));
+        DB::table('users')
+            ->whereIn('email', Arr::pluck($raw, 'email'))
+            ->delete();
 
         $users = factory(App\User::class, 4)->make();
         for ($i = -1, $is = count($users); ++$i < $is;)
