@@ -79,7 +79,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($this->client->{'user_id'}, self::isNull());
     }
 
-    public function test_it_generate_access_token_with_no_both_personal_token_explicit__ok()
+    public function test_it_generate_access_token_with_no_both_personal_token_explicit__error()
     {
         $personal_access = DB::table('oauth_personal_access_clients')
             ->where('client_id', $this->client->{'id'})
@@ -118,7 +118,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_client, self::logicalNot(self::isNull()));
     }
 
-    public function test_it_generate_access_token_with_no_first_personal_token_explicit__ok()
+    public function test_it_generate_access_token_with_no_first_personal_token_explicit__error()
     {
         $personal_access = DB::table('oauth_personal_access_clients')
             ->where('client_id', $this->client->{'id'})
@@ -153,7 +153,7 @@ class PersonalAccessGrantTest extends TestCase
         self::assertThat($_client, self::logicalNot(self::isNull()));
     }
 
-    public function test_it_generate_access_token_with_no_last_personal_token_explicit__ok()
+    public function test_it_generate_access_token_with_no_last_personal_token_explicit__error()
     {
         $personal_access = DB::table('oauth_personal_access_clients')
             ->where('client_id', $this->client->{'id'})
