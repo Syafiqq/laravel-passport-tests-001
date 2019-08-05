@@ -99,9 +99,15 @@ class RefreshGrantTest extends TestCase
         self::assertThat($result, self::arrayHasKey('refresh_token'));
         self::assertThat($response->status(), self::equalTo(200));
         $access_token = DB::table('oauth_access_tokens')
-            ->count();
+            ->get();
+        $refresh_token = DB::table('oauth_refresh_tokens')
+            ->get();
         var_dump($access_token);
-        self::assertThat($access_token, self::equalTo(2));
+        var_dump($refresh_token);
+        self::assertThat($access_token->count(), self::equalTo(2));
+        self::assertThat($access_token->sum('revoked'), self::equalTo(1));
+        self::assertThat($refresh_token->count(), self::equalTo(2));
+        self::assertThat($refresh_token->sum('revoked'), self::equalTo(1));
     }
 
     /*
